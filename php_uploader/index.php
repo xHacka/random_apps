@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
-    <style>.container{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,.1)}.upload-area,.upload-manual{margin-bottom:20px}h1,h2{color:#333}.upload-area{border:2px dashed #08c;padding:20px;text-align:center}#file-drop-area{cursor:pointer}button,input[type=file],input[type=text],textarea{margin-top:10px;padding:10px;width:100%;box-sizing:border-box}button{background-color:#08c;color:#fff;border:none;border-radius:4px}button:hover{background-color:#057}</style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -26,16 +26,7 @@
             </form>
         </div>
 
-        <h2>Uploaded Files</h2>
-        <ul id="file-list">
-            <?php
-                $files = scandir('uploads');
-                foreach ($files as $file) {
-                    if ($file === '.' || $file === '..') { continue; }
-                    echo "<li><a href='uploads/$file'>$file</a></li>";
-                }
-            ?>
-        </ul>
+
     </div>
 
     <script>

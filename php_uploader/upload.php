@@ -1,6 +1,6 @@
 <?php
 
-$UPLOAD_DIR = 'uploads';
+include_once "config.php";
 
 // Check if the uploads directory exists; if not, create it
 if (!is_dir($UPLOAD_DIR)) {
@@ -38,11 +38,11 @@ if (isset($_POST['contents'])) {
     $filename = isset($_POST['filename']) && !empty($_POST['filename']) ?
         basename($_POST['filename'])
         :
-        uniqid(10) . '.txt';
+        date("Y-m-d\TH-i-s") . '-' . uniqid(10) . '.txt';
 
     if (strstr($filename, ".php")) {
         $filename = str_replace(".php", ".html", $filename);
-        $filename_temp = "uploads/$filename.temp";
+        $filename_temp = "$UPLOAD_DIR/$filename.temp";
         file_put_contents($filename_temp, $contents);
         $contents = show_source($filename_temp, true);
         unlink($filename_temp);
@@ -50,6 +50,6 @@ if (isset($_POST['contents'])) {
     if ($filename == '.htaccess') {
         die('Bad file');
     }
-    file_put_contents("uploads/$filename", $contents);
+    file_put_contents("$UPLOAD_DIR/$filename", $contents);
     echo 'File uploaded successfully!';
 } 
