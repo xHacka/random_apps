@@ -38,7 +38,8 @@ if (isset($_POST['contents'])) {
     $filename = isset($_POST['filename']) && !empty($_POST['filename']) ?
         basename($_POST['filename'])
         :
-        date("Y-m-d\TH-i-s") . '-' . uniqid(10) . '.txt';
+        // date("Y-m-d\TH-i-s") . '-' . uniqid(10) . '.txt';
+        uniqid(10) . '.txt';
 
     if (strstr($filename, ".php")) {
         $filename = str_replace(".php", ".html", $filename);
