@@ -1,0 +1,14 @@
+# $ cat /etc/systemd/system/pod_diagnostics.service
+[Unit]
+Description=Python Web App To Solve Pod Diagnostics On HTB
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/pod_diagnostics
+ExecStart=/bin/bash -c 'source /var/www/pod_diagnostics/venv/bin/activate && exec python /var/www/pod_diagnostics/app.py'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
