@@ -1,0 +1,14 @@
+# $ cat /etc/systemd/system/base64_decode_encode.service
+[Unit]
+Description=Simple app for decoding and encoding base64 blobs, with dash of sql
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/base64_decode_encode
+ExecStart=/var/www/base64_decode_encode/venv/bin/python /var/www/base64_decode_encode/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
