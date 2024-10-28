@@ -88,4 +88,4 @@ def get_upload_filename(folder: Path, extension: str):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8002)

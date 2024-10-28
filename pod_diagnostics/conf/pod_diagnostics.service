@@ -7,7 +7,7 @@ After=network.target
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/pod_diagnostics
-ExecStart=/bin/bash -c 'source /var/www/pod_diagnostics/venv/bin/activate && exec python /var/www/pod_diagnostics/app.py'
+ExecStart=/var/www/pod_diagnostics/venv/bin/python /var/www/pod_diagnostics/app.py
 Restart=always
 
 [Install]
