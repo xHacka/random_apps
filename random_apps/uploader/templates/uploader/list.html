@@ -1,0 +1,91 @@
+{% extends 'uploader/base.html' %}
+
+{% block content %}
+<div class="uploads-container">
+    <h2>Uploads</h2>
+    
+    <div class="tab-switcher">
+        <input type="radio" id="text-tab" name="tabs" checked>
+        <label for="text-tab">Text Uploads</label>
+        
+        <input type="radio" id="file-tab" name="tabs">
+        <label for="file-tab">File Uploads</label>
+        
+        <div class="tabs-content">
+            <div class="tab-panel" id="text-content">
+                <div class="tab-panel" id="text-content">
+                    {% spaceless %}
+    
+                    {% for upload in uploads_text %}
+                        {% include 'uploader/list_item.html' with upload=upload %}
+                    {% endfor %}
+                    
+                    {% endspaceless %}
+                </div>
+
+                {% if uploads_text.has_other_pages %}
+                <div class="pagination">
+                    <div class="pagination-controls">
+                        {% if uploads_text.has_previous %}
+                            <a href="?tp={{ uploads_text.previous_page_number }}&tps={{ tps }}" class="page-link">&laquo; Previous</a>
+                        {% endif %}
+                        
+                        <span class="current-page">
+                            Page {{ uploads_text.number }} of {{ uploads_text.paginator.num_pages }}
+                        </span>
+
+                        {% if uploads_text.has_next %}
+                            <a href="?tp={{ uploads_text.next_page_number }}&tps={{ tps }}" class="page-link">Next &raquo;</a>
+                        {% endif %}
+                    </div>
+                    <div class="page-size-selector">
+                        <label for="text-size">Items per page:</label>
+                        <input 
+                            type="number" 
+                            id="text-size" 
+                            min="1" 
+                            value="{{ tps }}"
+                            onchange="window.location.href='?tp=1&tps=' + this.value"
+                        >
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-panel" id="file-content">
+                {% for upload in uploads_files %}
+                    {% include 'uploader/list_item.html' with upload=upload %}
+                {% endfor %}
+
+                {% if uploads_files.has_other_pages %}
+                <div class="pagination">
+                    <div class="pagination-controls">
+                        {% if uploads_files.has_previous %}
+                            <a href="?fp={{ uploads_files.previous_page_number }}&fps={{ fps }}" class="page-link">&laquo; Previous</a>
+                        {% endif %}
+                        
+                        <span class="current-page">
+                            Page {{ uploads_files.number }} of {{ uploads_files.paginator.num_pages }}
+                        </span>
+
+                        {% if uploads_files.has_next %}
+                            <a href="?fp={{ uploads_files.next_page_number }}&fps={{ fps }}" class="page-link">Next &raquo;</a>
+                        {% endif %}
+                    </div>
+                    <div class="page-size-selector">
+                        <label for="file-size">Items per page:</label>
+                        <input 
+                            type="number" 
+                            id="file-size" 
+                            min="1" 
+                            value="{{ fps }}"
+                            onchange="window.location.href='?fp=1&fps=' + this.value"
+                        >
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
