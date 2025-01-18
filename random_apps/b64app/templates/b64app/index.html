@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Base64 Encoder/Decoder</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'b64app/css/index.css' %}" />
+</head>
+
+<body>
+    <h1>Base64 Encoder/Decoder</h1>
+
+    <form method="POST" action="{% url 'decode' %}">
+        <label for="data">Base64 Input:</label>
+        <input type="text" id="data" name="data" required placeholder="Enter Base64 String" />
+        <button type="submit">Decode Base64</button>
+    </form>
+
+    {% if decoded %}
+    <div class="result">
+        <strong>Decoded Result:</strong><br />
+        {{ decoded }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'encode' %}">
+        <label for="data">Plaintext Input:</label>
+        <input type="text" id="data" name="data" required placeholder="Enter Plain Text" />
+        <button type="submit">Encode Text</button>
+    </form>
+
+    {% if encoded %}
+    <div class="result">
+        <strong>Encoded Result:</strong><br />
+        {{ encoded }}
+    </div>
+    {% endif %}
+</body>
+<script>
+    async function submit_handler(e) {
+        e.preventDefault();
+        const form = e.target;
+        const url = form.action;
+        const formData = new FormData(form);
+        const response = await fetch(url, {
+            method: "POST",
+            body: formData,
+        });
+        window.location.href = window.location.href;
+    }
+    const [encodeForm, decodeForm] = document.querySelectorAll("form");
+    encodeForm.addEventListener("submit", submit_handler);
+    decodeForm.addEventListener("submit", submit_handler);
+</script>
+
+</html>
