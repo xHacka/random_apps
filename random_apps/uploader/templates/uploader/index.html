@@ -1,0 +1,95 @@
+{% extends 'uploader/base.html' %}
+
+{% block content %}
+<h1>Upload Files & Text</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+    </div>
+
+    <div class="toggle-buttons">
+        <button type="button" class="toggle-btn active" data-target="text-upload">Text Upload</button>
+        <button type="button" class="toggle-btn" data-target="file-upload">File Upload</button>
+    </div>
+
+    <div id="file-upload" class="form-group hidden">
+        <div class="file-upload-area" id="uploadArea">
+            {{ form.file }}
+            <small>Supports all file types up to 10MB</small>
+            <div class="file-status" id="fileStatus">No file selected</div>
+        </div>
+    </div>
+
+    <div id="text-upload" class="form-group">
+        <label for="{{ form.text.id_for_label }}">Text Content</label>
+        {{ form.text }}
+    </div>
+
+    <button type="submit" class="submit-btn">Upload</button>
+</form>
+
+<br>
+
+{% spaceless %}
+    {% if upload %}
+        {% include 'uploader/list_item.html' with upload=upload %}
+    {% endif %}
+{% endspaceless %}
+
+</div>
+
+<script>
+    function generateRandomTitle() {
+        return Math.random().toString(16).slice(2) + '.txt';
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const titleInput = document.querySelector('#{{ form.title.id_for_label }}');
+        titleInput.value = generateRandomTitle();
+    });
+    
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            toggleButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById('file-upload').classList.add('hidden');
+            document.getElementById('text-upload').classList.add('hidden');
+            const targetId = button.dataset.target;
+            document.getElementById(targetId).classList.remove('hidden');
+        });
+    }); 
+    
+    const fileInput = document.querySelector('#{{ form.file.id_for_label }}');
+    const uploadArea = document.getElementById('uploadArea');
+    const fileStatus = document.getElementById('fileStatus');
+    
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const fileName = e.target.files[0].name;
+            const fileSize = (e.target.files[0].size / 1024 / 1024).toFixed(2); // Convert to MB
+            
+            // Update upload area appearance
+            uploadArea.classList.add('has-file');
+            uploadArea.setAttribute('data-filename', fileName);
+            
+            // Update file status
+            fileStatus.textContent = `Selected: ${fileName} (${fileSize} MB)`;
+            fileStatus.classList.add('visible');
+            
+            // Update title (existing functionality)
+            const titleInput = document.querySelector('#{{ form.title.id_for_label }}');
+            titleInput.value = fileName.split('.')[0]; // Remove file extension
+        } else {
+            // Reset to default state
+            uploadArea.classList.remove('has-file');
+            uploadArea.removeAttribute('data-filename');
+            fileStatus.textContent = 'No file selected';
+            fileStatus.classList.remove('visible');
+        }
+    });
+</script>
+
+{% endblock %}

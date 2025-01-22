@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'b64app/css/table.css' %}" />
+    <title>{{ title }}</title>
+</head>
+
+<body>
+    <div class="title">
+        <h1>{{ title }}</h1>
+        <h3>
+            <a href="{% url 'index' %}">Go back</a>
+        </h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Original</th>
+                <th>Converted</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.id }}</td>
+                <td>{{ record.original }}</td>
+                <td>{{ record.converted }}</td>
+                <td>{{ record.created_at | date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>
