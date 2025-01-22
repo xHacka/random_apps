@@ -15,13 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import path # , include
+# from django.conf import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('b64/', include('b64app.urls')),
-    path('up/', include('uploader.urls')),
-    path('', include('scarecrow.urls')),
-] + static('up/uploads/', document_root=settings.BASE_DIR / 'uploader/storage/uploads/')
+    # path('admin', admin.site.urls),
+    # path('b64', include('b64app.urls')),
+    # path('up', include('uploader.urls')),
+    # path('', include('scarecrow.urls')),
+
+    # path('', admin.site.urls),
+] 

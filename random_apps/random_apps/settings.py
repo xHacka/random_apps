@@ -24,10 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-vbakg690r9bk+7&-j)paac=bq81@ie@qho9k6yx)80=i63l%0z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -39,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scarecrow',  # Scare off script kiddies
-    'b64app',    # Base64 encoder/decoder
-    'uploader',    # Uploader
+    'b64app',     # Base64 encoder/decoder
+    'uploader',   # Uploader
 ]
 
 MIDDLEWARE = [
@@ -125,9 +123,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+STATICFILES_FINDERS = ['django.contrib.staticfiles.finders.AppDirectoriesFinder']
 STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
-STATICFILES_FINDERS = ['django.contrib.staticfiles.finders.AppDirectoriesFinder']
 STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -136,6 +134,25 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# https://docs.djangoproject.com/en/5.1/ref/settings/ # Default=2.5 MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 512 * 1024 * 1024       # 512MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 512 * 1024 * 1024       # 512MB
+LOGIN_REDIRECT_URL = '/'
+
+DOMAIN = 'example.com'
+if DOMAIN:
+    # https://github.com/jazzband/django-hosts
+    # https://dev.to/ksharma20/how-to-use-subdomains-for-different-apps-in-django-project--fbi
+    ROOT_HOSTCONF = 'random_apps.hosts'
+    DEFAULT_HOST= 'www'
+    
+    INSTALLED_APPS += ['django_hosts']
+    
+    ALLOWED_HOSTS = [f'.{DOMAIN}']  # All subdomains of domain
+    if DEBUG:
+        ALLOWED_HOSTS += ['localhost', '127.0.0.1']  # For local testing
+    
+    MIDDLEWARE = [
+        'django_hosts.middleware.HostsRequestMiddleware',
+        *MIDDLEWARE,
+        'django_hosts.middleware.HostsResponseMiddleware',
+    ]
+    
+     

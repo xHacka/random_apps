@@ -10,8 +10,7 @@ MAX_SIZE = getattr(settings, 'MAX_SIZE', 1000)
 
 
 def index(request):
-    # return render(request, 'b64app/index.html', {
-    return render(request, 'b64app/index2.html', {
+    return render(request, 'b64app/index.html', {
         'encoded': request.session.get('encoded'),
         'decoded': request.session.get('decoded')
     })

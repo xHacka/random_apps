@@ -3,14 +3,14 @@ from pathlib import Path
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-
+from .settings import UPLOAD_PATH
 
 class UploaderStorage(FileSystemStorage):
     def __init__(self, *args, **kwargs):
         # Files stored in  /appname/storage/uploads
         # Files served via /appname_route/uploads/filename
         kwargs['location'] = Path(settings.BASE_DIR) / 'uploader/storage/uploads/'
-        kwargs['base_url'] = '/up/uploads/'
+        kwargs['base_url'] = UPLOAD_PATH
         super().__init__(*args, **kwargs)
 
 
@@ -19,7 +19,6 @@ def sizeof_fmt(num, suffix="B"):
     Convert a file size in bytes to a human-readable format.
     https://stackoverflow.com/a/1094933
     """
-    print(vars())
     for unit in ("", "Kb", "Mb", "Gb"):
         if abs(num) < 1024.0:
             return f"{num:3.2f}{unit}{suffix}"
@@ -54,8 +53,6 @@ class Upload(models.Model):
             with open(filepath, 'rb') as f:
                 self.sha256sum = file_digest(f, 'sha256').hexdigest()
 
-            print(f'{filepath.stat()=}')
-            print(f'{filepath.stat().st_size=}')
             self.size = sizeof_fmt(filepath.stat().st_size)
             self.file.name = filepath.name
 
