@@ -1,3 +1,0 @@
-# No thanks
-User-agent: *
-Disallow: /
