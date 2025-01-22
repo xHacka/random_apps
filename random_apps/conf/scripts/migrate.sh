@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /var/www/random_apps_django/random_apps
+cd /var/www/random_apps/random_apps
 
 ../venv/bin/python manage.py makemigrations uploader
 ../venv/bin/python manage.py makemigrations b64app

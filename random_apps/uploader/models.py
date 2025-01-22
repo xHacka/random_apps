@@ -1,4 +1,4 @@
-from hashlib import file_digest
+import hashlib
 from pathlib import Path
 from django.db import models
 from django.core.files.storage import FileSystemStorage
@@ -26,6 +26,22 @@ def sizeof_fmt(num, suffix="B"):
     return f"{num:.1f}Gb{suffix}"
 
 
+def calculate_sha256(file_input) -> str:
+    file_hash = hashlib.sha256()
+
+    if isinstance(file_input, str):
+        # If file_input is a string (filename), open the file
+        with open(file_input, "rb") as f:
+            for byte_block in iter(lambda: f.read(4096), b""):
+                file_hash.update(byte_block)
+    else:
+        # If file_input is a file descriptor, use it directly
+        for byte_block in iter(lambda: file_input.read(4096), b""):
+            file_hash.update(byte_block)
+
+    return file_hash.hexdigest()
+
+
 class Upload(models.Model):
     __storage = UploaderStorage()
 
@@ -41,7 +57,7 @@ class Upload(models.Model):
 
     def save(self, *args, **kwargs):
         if self.file:
-            self.sha256sum = file_digest(self.file, 'sha256').hexdigest()
+            self.sha256sum = calculate_sha256(self.file)
             self.size = sizeof_fmt(self.file.size)
 
         elif self.text and not self.file:
@@ -51,7 +67,7 @@ class Upload(models.Model):
                 f.write(self.text)
 
             with open(filepath, 'rb') as f:
-                self.sha256sum = file_digest(f, 'sha256').hexdigest()
+                self.sha256sum = calculate_sha256(f)
 
             self.size = sizeof_fmt(filepath.stat().st_size)
             self.file.name = filepath.name
