@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Upload
 from .forms import UploadForm
 from django.views.decorators.csrf import csrf_exempt
-from random_apps.decorators import admin_only
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 @csrf_exempt
@@ -22,7 +22,7 @@ def upload(request):
     return render(request, 'uploader/index.html', {'form': form, 'upload': uploaded_file })
 
 
-@admin_only
+@login_required
 def upload_list(request):
     def get_int_field(param, default=1):
         return int(request.GET.get(param, default))

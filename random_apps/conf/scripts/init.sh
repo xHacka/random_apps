@@ -6,21 +6,23 @@ cd /var/www/random_apps/random_apps
 # Purge previous data
 bash ./conf/scripts/cleanup.sh
 
-# Create databases
-bash ./conf/scripts/migrate.sh
-
 # Create super user
 # DJANGO_SUPERUSER_PASSWORD="x" ../venv/bin/python manage.py createsuperuser --noinput --username x --email x@gmail.com
 
 # Collect static files
 ../venv/bin/python manage.py collectstatic -c --no-input
 
-# Change permissions for nginx
-sudo chown -R www-data:www-data /var/www/random_apps
-
 # Create uploads directory
 mkdir -p uploader/storage/uploads
-chmod 755 uploader/storage/uploads
+mkdir -p b64app/storage
+chmod 740 uploader/storage/uploads
+chmod 740 b64app/storage
+
+# Create databases
+bash ./conf/scripts/migrate.sh
+
+# Change permissions for nginx
+sudo chown -R www-data:www-data /var/www/random_apps
 
 # Copy configuration to nginx
 sudo cp ./conf/nginx/admin.conf /etc/nginx/sites-available/random_apps_admin.conf

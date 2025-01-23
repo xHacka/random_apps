@@ -2,7 +2,7 @@ from . import settings
 from .models import EncodedEntry, DecodedEntry
 from django.http import JsonResponse
 from django.shortcuts import render
-from random_apps.decorators import admin_only
+from django.contrib.auth.decorators import login_required
 import base64
 from django.views.decorators.csrf import csrf_exempt
 
@@ -62,12 +62,12 @@ def decode(request):
     return JsonResponse({"error": None, "result": result})
 
 
-@admin_only
+@login_required
 def show_encoded(request):
     records = EncodedEntry.objects.all()
     return render(request, 'b64app/table.html', {'title': 'Encoded Data', 'records': records})
 
-@admin_only
+@login_required
 def show_decoded(request):
     records = DecodedEntry.objects.all()
     return render(request, 'b64app/table.html', {'title': 'Decoded Data', 'records': records})

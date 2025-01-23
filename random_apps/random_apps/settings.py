@@ -134,10 +134,25 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = '/admin/login/' # Used by `login_required`
 LOGIN_REDIRECT_URL = '/'
+
+# # Ensure cookies are only sent over HTTPS
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+
+# # Prevent client-side JavaScript from accessing cookies
+# SESSION_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_HTTPONLY = True
+
+# # Optionally, enable the SameSite attribute for additional protection (e.g., "Strict" or "Lax")
+# SESSION_COOKIE_SAMESITE = "Lax"  # Options: 'Lax', 'Strict', or 'None'
+# CSRF_COOKIE_SAMESITE = "Lax"  # Same as above
 
 DOMAIN = 'example.com'
 if DOMAIN:
+    LOGIN_URL = f"http://admin.{DOMAIN}/login/"
+
     # https://github.com/jazzband/django-hosts
     # https://dev.to/ksharma20/how-to-use-subdomains-for-different-apps-in-django-project--fbi
     ROOT_HOSTCONF = 'random_apps.hosts'
@@ -155,4 +170,8 @@ if DOMAIN:
         'django_hosts.middleware.HostsResponseMiddleware',
     ]
     
-     
+    CSRF_TRUSTED_ORIGINS = [ f'https://*.{DOMAIN}' ]
+    
+    # Make cookies accessible across all subdomains
+    SESSION_COOKIE_DOMAIN = f".{DOMAIN}"
+    CSRF_COOKIE_DOMAIN = f".{DOMAIN}"
