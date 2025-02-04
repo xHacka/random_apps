@@ -6,6 +6,9 @@
 
 ```bash
 sudo su
+apt update
+apt upgrade
+apt install nginx git -y # Probably missing things
 cd /var/www
 git clone https://github.com/xHacka/random_apps.git
 cd random_apps
@@ -13,7 +16,11 @@ rm -rf .git*
 sed -i 's/example.com/YOURDOMAIN.TLD/g' ./random_apps/conf/nginx/*.conf
 sed -i 's/example.com/YOURDOMAIN.TLD/g' ./random_apps/random_apps/settings.py
 bash ./random_apps/conf/scripts/init.sh
+chown -R www-data:www-data /var/www
+ DJANGO_SUPERUSER_PASSWORD="supersecurepassword" ./venv/bin/python ./random_apps/manage.py createsuperuser --noinput --username superuser --email let@me.in
 ```
+
+> Tip: If you place space before the command it will not go into the history, but probably still better to enter password when it prompts
 
 ### Firewall
 
