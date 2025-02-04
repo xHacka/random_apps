@@ -2,7 +2,7 @@
 
 ### Setup
 
-> Note: Project is meant to be served on domain instead of seperate routes, routes are untested and subdomains is just fun 🤔
+> **Note**: Project is meant to be served on domain instead of seperate routes, routes are untested and subdomains is just fun 🤔
 
 ```bash
 sudo su
@@ -20,13 +20,13 @@ chown -R www-data:www-data /var/www
  DJANGO_SUPERUSER_PASSWORD="supersecurepassword" ./venv/bin/python ./random_apps/manage.py createsuperuser --noinput --username superuser --email let@me.in
 ```
 
-> Tip: If you place space before the command it will not go into the history, but probably still better to enter password when it prompts
+> **Tip**: If you place space before the command it will not go into the history, but probably still better to enter password when it prompts
 
 ### Firewall
 
 Current rules will look like (if using Oracle Cloud VPS)
 ```bash
-iptables -L -n -v --line-numbers # Show all rules using iptables
+iptables -L INPUT -n -v --line-numbers # Show all rules using iptables
 
 Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
@@ -40,10 +40,17 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 Add following rules to enable HTTP, HTTPs and 4444 just for fun!
 ```bash
+# To add:
 iptables -I INPUT 6 -p tcp --dport 80 -j ACCEPT
 iptables -I INPUT 6 -p tcp --dport 443 -j ACCEPT
 iptables -I INPUT 6 -p tcp --dport 4444 -j ACCEPT
+
+# To remove
+iptables -L INPUT -n -v --line-numbers # Will give rules with indexes
+iptables -D INPUT <RULE_INDEX_NUMBER> # e.g. 7
 ```
+
+> **Note**: It's important to consider how firewall works, this is a simple firewall which means if you add REJECT ALL rule before ACCEPT then it will get automatically dropped, that's why add command inserts before 6th index. 
 
 Do mind that same ingress rules need to be added in your instance VNC Security List
 
@@ -74,4 +81,4 @@ Somewhat simple prettified PHP upload server, maybe not the most secure too.
 Can be used to list saved files (txt,pdf) and download them.
 `/data` endpoint can receive pdf that has been compressed with gzip and encoded with base64, then save it as pdf and as text.
 
-> Note: Not included, futute TODO
+> **Note**: Not included, futute TODO
