@@ -8,7 +8,7 @@
 sudo su
 apt update
 apt upgrade
-apt install nginx git -y # Probably missing things
+apt install python3 python3-pip python3-venv nginx git cron -y # Probably missing things
 cd /var/www
 git clone https://github.com/xHacka/random_apps.git
 cd random_apps
@@ -75,6 +75,10 @@ Simple base64 encoder and decoder, with a dash of SQL.
 ### Uploader
 
 Somewhat simple prettified PHP upload server, maybe not the most secure too.
+
+### Log Analyzer
+
+Simple nginx access.log analyzer 
 
 ### pod_diagnostics
 
