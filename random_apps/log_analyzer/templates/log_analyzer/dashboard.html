@@ -1,0 +1,147 @@
+{% extends 'log_analyzer/base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <!-- Daily Traffic Chart -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Daily Traffic</h3>
+        <canvas id="trafficChart" height="300"></canvas>
+    </div>
+
+    <!-- HTTP Methods Distribution -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">HTTP Methods</h3>
+        <canvas id="methodsChart" height="300"></canvas>
+    </div>
+
+    <!-- Status Codes -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Status Codes</h3>
+        <canvas id="statusChart" height="300"></canvas>
+    </div>
+
+    <!-- Top Paths -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Top Paths</h3>
+        <div class="overflow-y-auto max-h-[300px]">
+            {% for path in top_paths %}
+            <div class="flex justify-between py-2 border-b">
+                <span class="text-sm text-gray-600 truncate max-w-[70%]">{{ path.path }}</span>
+                <span class="text-sm font-medium">{{ path.count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Top IPs -->
+    <div class="bg-white rounded-lg shadow p-6 col-span-2">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Top IP Addresses</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP Address</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Requests</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Data</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for ip in top_ips %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ip.ip_address }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ip.requests }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ip.total_bytes|filesizeformat }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Traffic Chart
+        const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        const trafficData = JSON.parse('{{ daily_traffic|safe }}');
+        new Chart(trafficCtx, {
+            type: 'line',
+            data: {
+                labels: trafficData.map(d => new Date(d.day).toLocaleDateString()),
+                datasets: [{
+                    label: 'Requests',
+                    data: trafficData.map(d => d.requests),
+                    borderColor: 'rgb(79, 70, 229)',
+                    tension: 0.1
+                }, {
+                    label: 'Avg Response Size (bytes)',
+                    data: trafficData.map(d => d.avg_response_size),
+                    borderColor: 'rgb(34, 197, 94)',
+                    tension: 0.1,
+                    yAxisID: 'bytes'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    bytes: {
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Bytes'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Methods Chart
+        const methodsCtx = document.getElementById('methodsChart').getContext('2d');
+        const methodsData = JSON.parse('{{ http_methods|safe }}');
+        new Chart(methodsCtx, {
+            type: 'bar',
+            data: {
+                labels: methodsData.map(m => m.request_method),
+                datasets: [{
+                    data: methodsData.map(m => m.count),
+                    backgroundColor: 'rgb(79, 70, 229)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        const statusData = JSON.parse('{{ status_codes|safe }}');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: statusData.map(s => s.status_code),
+                datasets: [{
+                    data: statusData.map(s => s.count),
+                    backgroundColor: [
+                        'rgb(34, 197, 94)',  // 2xx - Green
+                        'rgb(234, 179, 8)',  // 3xx - Yellow
+                        'rgb(239, 68, 68)',  // 4xx - Red
+                        'rgb(107, 114, 128)' // 5xx - Gray
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

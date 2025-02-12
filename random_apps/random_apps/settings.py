@@ -36,9 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     'scarecrow',  # Scare off script kiddies
     'b64app',     # Base64 encoder/decoder
     'uploader',   # Uploader
+    'log_analyzer',# Access Log Analytics
 ]
 
 MIDDLEWARE = [
@@ -87,6 +89,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'b64app' / 'storage' / 'db.sqlite3',
     },
+    'log_analyzer_db': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'log_analyzer' / 'storage' / 'db.sqlite3',
+    },
     'uploader_db': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'uploader' / 'storage' / 'db.sqlite3',
@@ -94,6 +100,7 @@ DATABASES = {
 }
 DATABASE_ROUTERS = [
     'b64app.routers.DBRouter',
+    'log_analyzer.routers.DBRouter',
     'uploader.routers.DBRouter',
 ]
 
@@ -149,7 +156,7 @@ LOGIN_REDIRECT_URL = '/'
 # SESSION_COOKIE_SAMESITE = "Lax"  # Options: 'Lax', 'Strict', or 'None'
 # CSRF_COOKIE_SAMESITE = "Lax"  # Same as above
 
-DOMAIN = 'example.com'
+DOMAIN = None # Configure like 'example.com'
 if DOMAIN:
     LOGIN_URL = f"http://admin.{DOMAIN}/login/"
 

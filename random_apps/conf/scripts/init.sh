@@ -1,37 +1,45 @@
 #!/bin/bash
 
+# Variables
+PROJECT_DIR="/var/www/random_apps/random_apps"
+PYTHON="$PROJECT_DIR/../venv/bin/python"
+NGINX_CONF_DIR="$PROJECT_DIR/conf/nginx"
+NGINX_SITES_AVAILABLE="/etc/nginx/sites-available"
+NGINX_SITES_ENABLED="/etc/nginx/sites-enabled"
+
 # Go to project
-cd /var/www/random_apps/random_apps
+cd $PROJECT_DIR
 
 # Purge previous data
-bash ./conf/scripts/cleanup.sh
+/bin/bash ./conf/scripts/cleanup.sh
 
 # Create super user
-# DJANGO_SUPERUSER_PASSWORD="x" ../venv/bin/python manage.py createsuperuser --noinput --username x --email x@gmail.com
+# DJANGO_SUPERUSER_PASSWORD="x" $PYTHON manage.py createsuperuser --noinput --username x --email x@gmail.com
 
 # Collect static files
-../venv/bin/python manage.py collectstatic -c --no-input
+# $PYTHON manage.py collectstatic -c --no-input
 
 # Create uploads directory
-mkdir -p uploader/storage/uploads
-mkdir -p b64app/storage
-chmod 740 uploader/storage/uploads
-chmod 740 b64app/storage
+/bin/install -m 740 -d ./log_analyzer/storage
+/bin/install -m 740 -d ./uploader/storage/uploads
+/bin/install -m 740 -d ./b64app/storage
 
 # Create databases
-bash ./conf/scripts/migrate.sh
+/bin/bash ./conf/scripts/migrate.sh
+
+# Setup cronjob for log_analyzer, every 3h
+(
+    sudo /bin/crontab -u www-data -l 2>/dev/null | /bin/grep -v random_apps; 
+    echo "0 */3 * * * $PYTHON $PROJECT_DIR/manage.py parse_logs > $PROJECT_DIR/log_analyzer/management/commands/parse_logs.log 2>&1"
+) | /bin/sudo /bin/crontab -u www-data -
 
 # Change permissions for nginx
-sudo chown -R www-data:www-data /var/www/random_apps
+sudo chown -R www-data:www-data $PROJECT_DIR
 
-# Copy configuration to nginx
-sudo cp ./conf/nginx/admin.conf /etc/nginx/sites-available/random_apps_admin.conf
-sudo cp ./conf/nginx/b64app.conf /etc/nginx/sites-available/random_apps_b64app.conf
-sudo cp ./conf/nginx/scarecrow.conf /etc/nginx/sites-available/random_apps_scarecrow.conf
-sudo cp ./conf/nginx/up.conf /etc/nginx/sites-available/random_apps_up.conf
-
-# Enable sites
-sudo ln -sf /etc/nginx/sites-available/random_apps_admin.conf /etc/nginx/sites-enabled/random_apps_admin.conf
-sudo ln -sf /etc/nginx/sites-available/random_apps_b64app.conf /etc/nginx/sites-enabled/random_apps_b64app.conf
-sudo ln -sf /etc/nginx/sites-available/random_apps_scarecrow.conf /etc/nginx/sites-enabled/random_apps_scarecrow.conf
-sudo ln -sf /etc/nginx/sites-available/random_apps_up.conf /etc/nginx/sites-enabled/random_apps_up.conf
+# Nginx Setup
+for config_file in $(ls $NGINX_CONF_DIR/*.conf); do
+    # Copy configuration to nginx
+    sudo /bin/cp "$NGINX_CONF_DIR/$config_file" "$NGINX_SITES_AVAILABLE/$config_file"
+    # Enable sites
+    sudo /bin/ln -sf "$NGINX_SITES_AVAILABLE/$config_file" "$NGINX_SITES_ENABLED/$config_file"
+done
