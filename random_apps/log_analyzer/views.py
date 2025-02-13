@@ -1,10 +1,12 @@
 from .models import LogEntry
 from datetime import timedelta
 from django.db.models import Count, Sum, Avg
+from django.db.models import Q
 from django.db.models.functions import TruncDay 
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.generic import TemplateView
+from log_analyzer.models import LogEntry 
 import json
 
 class DashboardView(TemplateView):
@@ -82,19 +84,24 @@ class FilterView(TemplateView):
         return context
 
 def filter_logs(request):
-    filters = {}
+    filters = Q()
+
     for key, value in request.GET.items():
         if value and key != 'page':
             if key == 'date':
                 try:
                     date = timezone.datetime.strptime(value, '%Y-%m-%d')
-                    filters[f'timestamp__date'] = date
+                    filters &= Q(timestamp__date=date)
                 except ValueError:
                     pass
+            elif key == 'ip_address':
+                filters &= Q(ip_address__icontains=value)  # Fuzzy search for IP
+            elif key == 'path':
+                filters &= Q(path__icontains=value)  # Fuzzy search for Path
             else:
-                filters[key] = value
-    
-    queryset = LogEntry.objects.filter(**filters)
+                filters &= Q(**{key: value})
+
+    queryset = LogEntry.objects.filter(filters)
     
     # Pagination
     page = int(request.GET.get('page', 1))
@@ -110,3 +117,4 @@ def filter_logs(request):
         'total': total,
         'pages': (total + per_page - 1) // per_page
     })
+    

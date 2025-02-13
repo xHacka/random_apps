@@ -38,8 +38,9 @@ sudo chown -R www-data:www-data $PROJECT_DIR
 
 # Nginx Setup
 for config_file in $(ls $NGINX_CONF_DIR/*.conf); do
+    config_file=$(basename $config_file)
     # Copy configuration to nginx
-    sudo /bin/cp "$NGINX_CONF_DIR/$config_file" "$NGINX_SITES_AVAILABLE/$config_file"
+    echo /bin/cp "$NGINX_CONF_DIR/$config_file" "$NGINX_SITES_AVAILABLE/$config_file"
     # Enable sites
-    sudo /bin/ln -sf "$NGINX_SITES_AVAILABLE/$config_file" "$NGINX_SITES_ENABLED/$config_file"
+    echo /bin/ln -sf "$NGINX_SITES_AVAILABLE/$config_file" "$NGINX_SITES_ENABLED/$config_file"
 done
