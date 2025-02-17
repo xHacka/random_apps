@@ -222,8 +222,8 @@
             }
         });
 
-        // Methods Chart
-        const methodsCtx = document.getElementById('methodsChart').getContext('2d');
+                // Methods Chart
+                const methodsCtx = document.getElementById('methodsChart').getContext('2d');
         const methodsData = JSON.parse('{{ http_methods|safe }}');
         const colors = [
             'rgba(79, 70, 229, 0.8)',
@@ -296,18 +296,64 @@
         // Status Codes Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
         const statusData = JSON.parse('{{ status_codes|safe }}');
+
+        // Function to assign colors based on status code range
+        const getColor = (statusCode) => {
+            // Success responses (2xx)
+            if (statusCode === 200) {
+                return 'rgba(34, 197, 94, 0.9)';     // OK - Bright green
+            } else if (statusCode === 201) {
+                return 'rgba(22, 163, 74, 0.9)';     // Created - Darker green
+            } else if (statusCode === 204) {
+                return 'rgba(134, 239, 172, 0.9)';   // No Content - Light green
+            } else if (statusCode >= 200 && statusCode < 300) {
+                return 'rgba(34, 197, 94, 0.8)';     // Other 2xx - Standard green
+            }
+        
+            // Redirection responses (3xx)
+            if (statusCode === 301 || statusCode === 308) {
+                return 'rgba(234, 179, 8, 0.9)';     // Permanent redirects - Deep yellow
+            } else if (statusCode === 302 || statusCode === 307) {
+                return 'rgba(250, 204, 21, 0.9)';    // Temporary redirects - Medium yellow
+            } else if (statusCode >= 300 && statusCode < 400) {
+                return 'rgba(253, 224, 71, 0.9)';    // Other 3xx - Light yellow
+            }
+        
+            // Client error responses (4xx)
+            if (statusCode === 400) {
+                return 'rgba(248, 113, 113, 0.9)';   // Bad Request - Light red
+            } else if (statusCode === 401 || statusCode === 403) {
+                return 'rgba(220, 38, 38, 0.9)';     // Authentication/Authorization - Dark red
+            } else if (statusCode === 404) {
+                return 'rgba(239, 68, 68, 0.9)';     // Not Found - Standard red
+            } else if (statusCode === 429) {
+                return 'rgba(190, 18, 60, 0.9)';     // Too Many Requests - Deep red
+            } else if (statusCode >= 400 && statusCode < 500) {
+                return 'rgba(239, 68, 68, 0.8)';     // Other 4xx - Standard red
+            }
+        
+            // Server error responses (5xx)
+            if (statusCode === 500) {
+                return 'rgba(75, 85, 99, 0.9)';      // Internal Server Error - Dark gray
+            } else if (statusCode === 503) {
+                return 'rgba(107, 114, 128, 0.9)';   // Service Unavailable - Medium gray
+            } else if (statusCode === 504) {
+                return 'rgba(156, 163, 175, 0.9)';   // Gateway Timeout - Light gray
+            } else if (statusCode >= 500 && statusCode < 600) {
+                return 'rgba(107, 114, 128, 0.8)';   // Other 5xx - Standard gray
+            }
+        
+            // Unknown status codes
+            return 'rgba(255, 255, 255, 0.8)';       // Default white
+        };
+
         new Chart(statusCtx, {
             type: 'doughnut',
             data: {
                 labels: statusData.map(s => `${s.status_code} (${s.count})`),
                 datasets: [{
                     data: statusData.map(s => s.count),
-                    backgroundColor: [
-                        'rgba(34, 197, 94, 0.8)',  // 2xx - Green
-                        'rgba(234, 179, 8, 0.8)',  // 3xx - Yellow
-                        'rgba(239, 68, 68, 0.8)',  // 4xx - Red
-                        'rgba(107, 114, 128, 0.8)' // 5xx - Gray
-                    ],
+                    backgroundColor: statusData.map(s => getColor(s.status_code)),
                     borderWidth: 2,
                     borderColor: '#ffffff'
                 }]
