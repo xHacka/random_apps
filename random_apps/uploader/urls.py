@@ -15,3 +15,8 @@ urlpatterns = [
     # Only works in DEBUG=1
     *static(UPLOAD_PATH, document_root=UPLOAD_ROOT)
 ]
+
+from django.conf import settings
+from django.shortcuts import redirect
+from django.conf.urls import handler404
+handler404 = lambda request, exception: redirect(settings.JAM)

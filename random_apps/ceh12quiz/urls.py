@@ -1,10 +1,10 @@
 from django.urls import path
 from . import views
 
+app_name = 'ceh12quiz'
+
 urlpatterns = [
-    path('', views.DashboardView.as_view(), name='dashboard'),
-    path('filter/', views.FilterView.as_view(), name='filter'),
-    path('api/filter/', views.filter_logs, name='filter_logs'),
+    path('', views.quiz_view, name='quiz'),
 ]
 
 from django.conf import settings
