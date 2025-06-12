@@ -8,4 +8,5 @@ host_patterns = patterns('',
     host('b64', 'b64app.urls', name='b64'),
     host('up', 'uploader.urls', name='up'),
     host('access', 'log_analyzer.urls', name='access'),
-) 
+    host('ceh12quiz', 'ceh12quiz.urls', name='ceh12quiz'),
+)

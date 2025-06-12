@@ -2,3 +2,6 @@ Django
 
 # If you want to use subdomains instead of paths
 django-hosts
+
+# Prod
+gunicorn

@@ -1,0 +1,13 @@
+[Unit]
+Description=Django Random Apps (Gunicorn)
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/random_apps
+ExecStart=/var/www/random_apps/venv/bin/gunicorn random_apps.wsgi:application --bind 127.0.0.1:11892 --workers 3
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

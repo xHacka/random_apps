@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'scarecrow',  # Scare off script kiddies
-    'b64app',     # Base64 encoder/decoder
-    'uploader',   # Uploader
-    'log_analyzer',# Access Log Analytics
+    'scarecrow',    # Scare off script kiddies
+    'b64app',       # Base64 encoder/decoder
+    'uploader',     # Uploader
+    'log_analyzer', # Access Log Analytics
+    'ceh12quiz',    # CEHv12 Prep
 ]
 
 MIDDLEWARE = [
@@ -155,6 +156,8 @@ LOGIN_REDIRECT_URL = '/'
 # # Optionally, enable the SameSite attribute for additional protection (e.g., "Strict" or "Lax")
 # SESSION_COOKIE_SAMESITE = "Lax"  # Options: 'Lax', 'Strict', or 'None'
 # CSRF_COOKIE_SAMESITE = "Lax"  # Same as above
+
+JAM = "https://www.youtube.com/watch?v=on9TXY8kYyk"
 
 DOMAIN = None # Configure like 'example.com'
 if DOMAIN:
