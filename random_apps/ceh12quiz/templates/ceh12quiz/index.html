@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEHv12 Exam</title>
+    <link rel="stylesheet" href="{% static 'ceh12quiz/css/styles.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>CEHv12 Exam</h1>
+            <div class="header-controls">
+                <div class="score-container">
+                    <div class="score">Score: <span id="score">0</span>/<span id="total">0</span></div>
+                </div>
+                <button id="reset-progress" class="reset-button" title="Reset all progress and start fresh">Reset Progress</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="quiz-container">
+                <div class="questions-panel">
+                    <h2>Questions</h2>
+                    <div id="questions-list" class="questions-list">
+                        <!-- Questions will be populated here by JS -->
+                    </div>
+                    <div class="pagination">
+                        <button id="prev-page" disabled>Previous</button>
+                        <span id="page-info">Page 1</span>
+                        <button id="next-page">Next</button>
+                    </div>
+                </div>
+
+                <div class="content-panel">
+                    <div id="question-display" class="question-display">
+                        <h3>Select a question from the list</h3>
+                    </div>
+                    <div id="answers-container" class="answers-container">
+                        <!-- Answers will be populated here by JS -->
+                    </div>
+                    <div class="question-navigation">
+                        <button id="prev-question">Previous Question</button>
+                        <div class="toggles-container">
+                            <div class="auto-next-container"
+                                title="Enable to automatically advance to next question after answering">
+                                <label for="auto-next">Auto Next</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="auto-next">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="auto-answer-container"
+                                title="Enable to automatically show correct answer after a short delay">
+                                <label for="auto-answer">Auto Answer</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="auto-answer">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="shuffle-container"
+                                title="Enable to shuffle the order of questions">
+                                <label for="shuffle">Shuffle</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="shuffle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <button id="next-question">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- https://www.scribd.com/document/724571461/CEH-v12-500-Questions-and-Answers -->
+
+    <script src="{% static 'ceh12quiz/js/questions.js' %}"></script>
+    <script src="{% static 'ceh12quiz/js/script.js' %}"></script>
+</body>
+
+</html>
